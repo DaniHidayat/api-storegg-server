@@ -26,8 +26,11 @@ module.exports = {
     },
     actionSignin: async (req,res)=>{
         try {
+           
             const { email, password } = req.body;
             const check = await User.findOne({ email: email });
+            console.log(check);
+           
             if (check) {
                 if (check.status === 'Y') {
                     const checkPassword = await bcrypt.compare(password, check.password)

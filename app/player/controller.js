@@ -8,6 +8,7 @@ const Transaction = require('../transaction/model')
 const path = require('path')
 const fs = require('fs')
 const config = require('../../config')
+const { populate } = require('./model')
 module.exports = {
     landingPage: async (req, res) => {
         try {
@@ -19,17 +20,26 @@ module.exports = {
         }
     },
     detailPage: async (req, res) => {
+        console.log('req', req.params.id);
         try {
             const { id } = req.params
 
             const voucher = await Voucher.findOne({ _id: id }).populate('nominals').populate('category')
-                .populate('user', '_id name phoneNumber')
+                .populate('user', '_id name phoneNumber').populate({
+                    path: 'payment',
+                    populate: {
+                        path: 'banks',
+                        model: 'Bank'
+                    }
+                }).exec()
             if (!voucher) {
                 return res.status(404).json({
                     message : 'Voucher game tidak ditemukan!'
                 })
             }
-            res.status(200).json({ data: voucher });
+            res.status(200).json({
+                data:{ detail: voucher}
+            });
         } catch (err) {
             res.status(500).json({ message: err.message || 'internal server error' })
         }
@@ -44,8 +54,9 @@ module.exports = {
     
     },
     checkout: async (req, res) => {
+        console.log('body',req.body);
         try {
-            const { acountUser, name, nominal, voucher, payment, bank } = req.body;
+            const { accountUser, name, nominal, voucher, payment, bank } = req.body;
 
             const res_voucher = await Voucher.findOne({ _id: voucher }).select('name category _id thumbnail user').populate('category').populate('user')
             
@@ -62,10 +73,11 @@ module.exports = {
             if (!res_bank) return res.status(404).json({ message: '  Bank tidak adak' })
             let tax = (10 / 100) * res_nominal._doc.price;
             let value =  res_nominal._doc.price - tax;
+            
             const payload = {
                 historyVoucherTopup: {
                     gameName: res_voucher._doc.name,
-                    category: res_voucher._doc.category ? res_voucher._doc.category: '',
+                    category: res_voucher._doc.category ? res_voucher._doc.category.name: '',
                     thumbnail: res_voucher._doc.thumbnail,
                     coinName: res_nominal._doc.coinName,
                     coinQuantity: res_nominal._doc.coinQuantity,
@@ -78,7 +90,7 @@ module.exports = {
                     noRekening: res_bank._doc.bankName,
                 },
                 name : name,
-                acountUser: acountUser,
+                accountUser: accountUser,
                 tax: tax,
                 value: value,
                 player: req.player._id,
@@ -100,6 +112,7 @@ module.exports = {
         }
     },
     history: async (req, res) => {
+       
         try {
             const { status = '' } = req.query;
             let criteria = {}
@@ -115,7 +128,7 @@ module.exports = {
                     player :req.player._id
                 }
             }
-            const history = await Transaction.find(criteria)
+            const history = await Transaction.find(criteria).populate('category')
             let total = await Transaction.aggregate([
                 { $match: criteria },
                 {
@@ -133,6 +146,7 @@ module.exports = {
         }
     },
     historyDetail: async (req, res) => {
+       
             try {
                 const { id } = req.params;
                 const history = await Transaction.findOne({_id: id});
@@ -143,7 +157,7 @@ module.exports = {
                 res.status(500).json({ message: err.message || 'internal server error' })
             }
     },
-    dashboarrd: async (req, res) => {
+    dashboard: async (req, res) => {
         try {
             const count = await Transaction.aggregate([
                 { $match: { player: req.player._id } },

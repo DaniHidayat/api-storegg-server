@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '2000');
 app.set('port', port);
 
 /**
@@ -46,6 +46,7 @@ db.on('open', function () {
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.listen(port, () => console.log(`Server running at port: ${port}`));
+
 /**
  * Normalize a port into a number, string, or false.
  */

@@ -1,5 +1,7 @@
 const Transaction = require('./model')
+const dotenv = require('dotenv');
 
+dotenv.config()
 module.exports = {
     index: async (req, res) => {
         try {
@@ -45,6 +47,7 @@ module.exports = {
     },
 
     actionDetail: async (req, res)=>{
+        console.log('dani',process.env.URL)
         try {
             const { id } = req.params;
             const { status } = req.query;
@@ -53,6 +56,7 @@ module.exports = {
           
             res.render('admin/transaction/view_transaction_detail', {
                 transaction,
+                url: process.env.URL,
                 name: req.session.user.name,
                 title: 'Halaman Jenis Pembayaran'
 

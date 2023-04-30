@@ -59,27 +59,60 @@
                                             <div class="form-group">
                                                 <label>Nominal</label>
                                                 <div class="select2-purple">
+                                                    <select class="form-control select2 " multiple="multiple" data-placeholder="Pilih Nominal" style="width: 100%;"
+                                                        name="nominals" required>
+                                            
+                                                        <%nominal.forEach(nominal=>{ %>
+                                                            <option value="<%= nominal._id%>" <% voucher.nominals.forEach(voucherNominal=>{ %>
+                                                                <% if(nominal._id.toString()===voucherNominal._id.toString()) { %>
+                                                                    selected
+                                                                    <% } %>
+                                            
+                                                                        <%}) %>>
+                                            
+                                            
+                                                                            <%= nominal.coinName%>
+                                                                                <%= nominal.price%>
+                                                            </option>
+                                                            <% }) %>
+                                                    </select>
+                                                </div>
+                                            
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Payment</label>
+                                                <div class="select2-purple">
                                                     <select class="form-control select2 " multiple="multiple"
                                                         data-placeholder="Pilih Nominal" style="width: 100%;"
-                                                        name="nominals" required>
+                                                        name="payment" required>
 
-                                                        <%nominal.forEach(nominal=>{ %>
-                                                            <option value="<%= nominal._id%>"<% voucher.nominals.forEach(voucherNominal=>{ %>
-                                                                <% if(nominal._id.toString()=== voucherNominal._id.toString()) { %>
+                                                        <%payment.forEach(payment=>{ %>
+                                                            <option value="<%= payment._id%>"<% voucher.payment.forEach(voucherPayment=>{ %>
+                                                                <% if(payment._id.toString()=== voucherPayment._id.toString()) { %>
                                                                     selected
                                                                     <% } %>
                                                             
                                                                         <%}) %>>
 
                                                                 
-                                                                <%= nominal.coinName%>
-                                                                    <%= nominal.price%>
+                                                                <%= payment.type%>
+                                                                (
+                                                                <ul>
+                                                                    <% payment.banks.forEach(b=> { %>
+                                                                        <li>
+                                                                            <%= b.name %>
+                                                                        </li>-
+                                                                        <%}) %>
+                                                                </ul>
+                                                                )
+                                                                   
                                                             </option>
                                                             <% }) %>
                                                     </select>
                                                 </div>
 
                                             </div>
+                                           
                                             <div class="form-group">
                                                 <label for="gambar">Gambar </label>
                                                 <input type="file" name="image" class="form-control" id="image"

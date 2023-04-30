@@ -7,8 +7,7 @@ var methodOverride = require('method-override')
 var session = require('express-session')
 var flash = require('connect-flash')
 var cors = require('cors')
-
-
+const db = require('../bwa-storegg-server/db');
 var dashboardRouter = require('./app/dashboard/router');
 var categoryRouter = require('./app/category/router');
 var nominalRouter = require('./app/nominal/router');
