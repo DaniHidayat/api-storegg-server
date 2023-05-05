@@ -7,7 +7,6 @@ var methodOverride = require('method-override')
 var session = require('express-session')
 var flash = require('connect-flash')
 var cors = require('cors')
-const db = require('../bwa-storegg-server/db');
 var dashboardRouter = require('./app/dashboard/router');
 var categoryRouter = require('./app/category/router');
 var nominalRouter = require('./app/nominal/router');
@@ -19,6 +18,8 @@ var transactionRouter = require('./app/transaction/router');
 var plyaerRouter = require('./app/player/router');
 var authRouter = require('./app/auth/router');
 var helloRouter = require('./app/hello/router');
+var vocaRouter = require('./app/voca/router');
+var midtransRouter = require('./app/midtrans/router');
 
 var app = express();
 const URL = '/api/v1'
@@ -40,7 +41,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use('/adminlte', express.static(path.join(__dirname, '/node_modules/admin-lte/')));
 app.use('/image', express.static(path.join(__dirname, '/public/uploads/')));
 app.use('/', usersRouter);
@@ -51,7 +51,9 @@ app.use('/voucher', voucherRouter);
 app.use('/bank', bankRouter);
 app.use('/payment', paymentRouter);
 app.use('/transaction', transactionRouter);
-app.use('/hello', helloRouter); // use route posts di Express
+app.use('/transaction', transactionRouter);
+app.use('/voca', vocaRouter); 
+app.use('/midtrans', midtransRouter); 
 
 
 //API
