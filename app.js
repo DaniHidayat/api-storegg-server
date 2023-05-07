@@ -17,7 +17,6 @@ var usersRouter = require('./app/users/router');
 var transactionRouter = require('./app/transaction/router');
 var plyaerRouter = require('./app/player/router');
 var authRouter = require('./app/auth/router');
-var helloRouter = require('./app/hello/router');
 var vocaRouter = require('./app/voca/router');
 var midtransRouter = require('./app/midtrans/router');
 
