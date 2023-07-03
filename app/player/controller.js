@@ -11,13 +11,13 @@ const config = require('../../config')
 const { populate } = require('./model')
 module.exports = {
     landingPage: async (req, res) => {
-        try {
-            const voucher = await Voucher.find().select('_id name status category thumbnail').populate('category')
-            
-            res.status(200).json({ data: voucher });
-        } catch (err) {
-            res.status(500).json({message: err.message || 'internal server error'})
-        }
+    try {
+        const voucher = await Voucher.find().select('_id name status category thumbnail').populate('category')
+        
+        res.status(200).json({ data: voucher });
+    } catch (err) {
+        res.status(500).json({message: err.message || 'internal server error'})
+    }
     },
     detailPage: async (req, res) => {
         console.log('req', req.params.id);
@@ -211,7 +211,6 @@ module.exports = {
         
         try {
             
-
         const { name = "", phoneNumber = "" } = req.body;
         const payload = {};
         if (name.length) payload.name = name;

@@ -19,7 +19,7 @@ var plyaerRouter = require('./app/player/router');
 var authRouter = require('./app/auth/router');
 var vocaRouter = require('./app/voca/router');
 var midtransRouter = require('./app/midtrans/router');
-
+var noteRouter = require('./app/note/router');
 var app = express();
 const URL = '/api/v1'
 app.use(cors())
@@ -52,12 +52,15 @@ app.use('/payment', paymentRouter);
 app.use('/transaction', transactionRouter);
 app.use('/transaction', transactionRouter);
 app.use('/voca', vocaRouter); 
-app.use('/midtrans', midtransRouter); 
+app.use('/midtrans', midtransRouter);
+
+
 
 
 //API
 
 app.use(`${URL}/players`, plyaerRouter);
+app.use(`${URL}/notes`, noteRouter); 
 app.use(`${URL}/auth`, authRouter);
 
 // catch 404 and forward to error handler
