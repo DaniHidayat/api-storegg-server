@@ -26,6 +26,10 @@ let transactionSchema = mongoose.Schema({
         maxlength: [255, "panjang name harus antara 3-255 karakter"],
         minlength: [3, "panjang name harus antara 3-255 karakter"]
     },
+    numberTransaction:{
+        type: String,
+        default:0
+    },
 
     tax: {
         type: Number,

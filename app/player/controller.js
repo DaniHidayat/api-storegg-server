@@ -56,7 +56,7 @@ module.exports = {
     checkout: async (req, res) => {
         console.log('body',req.body);
         try {
-            const { accountUser, name, nominal, voucher, payment, bank } = req.body;
+            const { accountUser, name, nominal, voucher, payment, bank,numberTransaction } = req.body;
 
             const res_voucher = await Voucher.findOne({ _id: voucher }).select('name category _id thumbnail user').populate('category').populate('user')
             
@@ -72,7 +72,7 @@ module.exports = {
             const res_bank = await Bank.findOne({ _id: bank  })
             if (!res_bank) return res.status(404).json({ message: '  Bank tidak adak' })
             let tax = (10 / 100) * res_nominal._doc.price;
-            let value =  res_nominal._doc.price - tax;
+            let value =  res_nominal._doc.price + tax;
             
             const payload = {
                 historyVoucherTopup: {
@@ -91,6 +91,7 @@ module.exports = {
                 },
                 name : name,
                 accountUser: accountUser,
+                numberTransaction: numberTransaction,
                 tax: tax,
                 value: value,
                 player: req.player._id,
@@ -98,10 +99,13 @@ module.exports = {
                     name: res_voucher._doc.user ? res_voucher._doc.user.name : undefined,
                     phoneNumber: res_voucher._doc.user ? res_voucher._doc.user.phoneNumber : undefined,
                   },
-                  category: res_voucher._doc.category && res_voucher._doc.category._id,
-                  user: res_voucher._doc.user && res_voucher._doc.user._id,
+                category: res_voucher._doc.category && res_voucher._doc.category._id,
+                user: res_voucher._doc.user && res_voucher._doc.user._id,
                   
             }
+            console.log('====================================');
+            console.log('payload',payload);
+            console.log('====================================');
             const transaction = new Transaction(payload)
             await transaction.save();
 

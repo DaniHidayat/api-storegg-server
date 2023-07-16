@@ -1,4 +1,5 @@
 const midtransClient = require('midtrans-client');
+const Transaction = require('../transaction/model')
 module.exports = {
     
 
@@ -29,12 +30,13 @@ module.exports = {
               }
     },
     callbackPayement: async (req, res) => {
+       
         const { body } = req;
      const { transaction_status, order_id, fraud_status } = body;
 
         // Lakukan log transaksi
         console.log(`Transaksi dengan ID ${order_id} memiliki status ${transaction_status} dan fraud status ${fraud_status}`);
-
+           
             // Proses sesuai status transaksi
             if (transaction_status == 'capture') {
                 // Transaksi berhasil dilakukan
@@ -44,12 +46,25 @@ module.exports = {
                     'data': 'success'
                 })
             } else if (transaction_status == 'settlement') {
-                res.status(200).json({
-                    'data': 'success'
-                })
-                // Transaksi berhasil dan sudah terbayar
-                // Kirim notifikasi ke pelanggan
-                // Update status pesanan di database
+                const filter = { numberTransaction: order_id };
+                const update = { $set: { status: transaction_status } };
+                try {
+                    const t = await Transaction.findOneAndUpdate(filter, update, { new: true });
+                  
+                    if (t) {
+                        res.status(200).json({
+                            'data': 'success'
+                        })
+                    } else {
+                        res.status(500).json({
+                            'data': 'error'
+                        })
+                    }
+                  } catch (err) {
+                    res.status(500).json({
+                        'data': err.message
+                    })
+                  }
             } else if (transaction_status == 'deny') {
                 res.status(200).json({
                     'data': 'tolak'
@@ -83,7 +98,11 @@ module.exports = {
                     'message' : 'Midtrans notification success'
                     });
                 },
-    cobabayar:  async (req, res) => {
+     finish:  async (req, res) => {
+        res.redirect('http://localhost:3000/complete-checkout');
+    },
+    
+      cobabayar:  async (req, res) => {
         try {
            
 
